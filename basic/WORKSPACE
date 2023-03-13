@@ -1,0 +1,36 @@
+# placeholder, the root of the project
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "bazel_skylib",
+    sha256 = "b8a1527901774180afc798aeb28c4634bdccf19c4d98e7bdd1ce79d1fe9aaad7",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.4.1/bazel-skylib-1.4.1.tar.gz",
+        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.4.1/bazel-skylib-1.4.1.tar.gz",
+    ],
+)
+
+load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+
+bazel_skylib_workspace()
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "rules_python",
+    sha256 = "ffc7b877c95413c82bfd5482c017edcf759a6250d8b24e82f41f3c8b8d9e287e",
+    strip_prefix = "rules_python-0.19.0",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.19.0/rules_python-0.19.0.tar.gz",
+)
+
+load("@rules_python//python:repositories.bzl", "python_register_toolchains")
+
+python_register_toolchains(
+    name = "python3_9",
+    # Available versions are listed in @rules_python//python:versions.bzl.
+    # We recommend using the same version your team is already standardized on.
+    python_version = "3.9",
+)
+
+load("@python3_9//:defs.bzl", "interpreter")

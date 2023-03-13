@@ -1,0 +1,1 @@
+# Do not use bazelbuild/rules_cc, just use native rules for now

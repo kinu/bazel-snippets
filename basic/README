@@ -1,0 +1,87 @@
+https://www.youtube.com/watch?v=toPWLiUq5Ps
+
+1. create almost empty WORKSPACE & BUILD
+  Now //: is the root of this directory (where WORKSPACE exists)
+
+  $ bazel build //:all
+
+  This will create bazel bin, out, etc
+  Just do :all would do that too
+
+2. Let's create our own rule in my_custom_rule.bzl
+  Super simple rule its impl function does nothing
+  Then load it from BUILD
+
+3. Create an input file, and
+
+ a) Define it as a new dependency attr in the rule definition
+  Note that here we use "attrs" dictionary
+
+  ```
+  rule (
+    implementation = ...,
+    attrs = {
+      "my_input_file" : attr.label(allow_single_file = True)
+    }
+  )
+  ```
+
+ b) It can be passed when calling the rule from BUILD file
+  Note that here we just give it as a named parameter
+
+  ```
+  write_new_file(
+      name = "...",
+      my_input_file = "//:my_input_file.txt",
+  )
+  ```
+
+ c) It can then be accessed in the implementation functions
+  Note that it can be accessed as a field of ctx.attr (not attrs!!)
+
+  ```
+  print("Input: ", ctx.attr.my_input_file)
+  ```
+
+4. Let's set up the output file.
+
+ a) Call ctx.actions.declare_file(file_name) in the implementation
+
+ b) Pass the file name via attr/attrs again
+
+ c) Again pass a string from the BUILD file
+
+5. Add another custom build step that uses python!
+
+ a) Copy paste the right WORKSPACE snippet from 'Getting started'
+ https://github.com/bazelbuild/rules_python
+ https://github.com/bazelbuild/rules_python/releases
+
+ This also needs to setup bazel-skylib as a dependency!
+ https://github.com/bazelbuild/bazel-skylib/releases
+
+ b) Copy paste the 'Toolchain registration' script into WORKSPACE
+ Only need to register "interpreter" here
+ https://github.com/bazelbuild/rules_python
+
+ c) Let's test using it, using "Hello World" snippet in BUILD
+ https://github.com/bazelbuild/rules_python
+ Change "main" to "my_build_tool"
+
+ d) Create my_build_tool.py
+ Start only with one line:
+  print("This is my build tool")
+
+  $ bazel build //:all
+  will download everything
+
+  $ bazel run //:my_build_tool
+  This will run the python code above
+
+ d) Actually write the tool to do something, let's read from argv[1] and write
+ into argv[2]
+
+  $ bazel run //:my_build_tool `pwd`/my_input_file.txt `pwd`/out.txt
+  $ cat out.txt
+
+ e) Write another rule that calls this python in my_custom_rule.bzl!
