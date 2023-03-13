@@ -1,8 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include "myadd.h"
-#include "mysub.h"
+#include "mymath.h"
 
 using namespace std;
 
